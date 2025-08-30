@@ -1,0 +1,806 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lamerced Wearink - Diseño de Camisetas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        body {
+            background: #f8f9fa;
+            color: #212529;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 40px 20px 30px;
+            position: relative;
+        }
+        
+        .logo-container {
+            margin-bottom: 20px;
+        }
+        
+        .logo {
+            width: 300px;
+            height: auto;
+            max-width: 100%;
+        }
+        
+        .tagline {
+            font-size: 1.4rem;
+            color: #6c757d;
+            font-weight: 300;
+            max-width: 600px;
+            margin: 0 auto;
+            letter-spacing: 1px;
+        }
+        
+        .social-links {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 15px;
+        }
+        
+        .social-link {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .whatsapp {
+            background: #25D366;
+        }
+        
+        .instagram {
+            background: #e74c3c;
+            background: linear-gradient(45deg, #f77737, #fd1d1d, #fcb045);
+        }
+        
+        .social-link:hover {
+            transform: translateY(-5px);
+        }
+        
+        .design-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            margin: 60px 0 40px;
+            justify-content: center;
+        }
+        
+        .upload-section {
+            flex: 1;
+            min-width: 300px;
+            max-width: 500px;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .preview-section {
+            flex: 1;
+            min-width: 300px;
+            max-width: 500px;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            color: #000;
+            margin-bottom: 25px;
+            font-weight: 600;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .upload-area {
+            border: 3px dashed #e0e0e0;
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+        
+        .upload-area:hover {
+            border-color: #e74c3c;
+            background: #fff8f8;
+        }
+        
+        .upload-area.active {
+            border-color: #e74c3c;
+            background: #fff8f8;
+        }
+        
+        .upload-icon {
+            font-size: 3rem;
+            color: #999;
+            margin-bottom: 15px;
+        }
+        
+        .upload-text {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .upload-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .upload-btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+        
+        input[type="file"] {
+            display: none;
+        }
+        
+        .preview-image-container {
+            position: relative;
+            width: 300px;
+            height: 400px;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .preview-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .uploaded-design {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 150px;
+            height: 150px;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            cursor: move;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 10;
+            pointer-events: auto;
+        }
+        
+        .uploaded-design.visible {
+            opacity: 1;
+        }
+        
+        .uploaded-design.dragging {
+            cursor: grabbing;
+            z-index: 20;
+        }
+        
+        .no-design {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #999;
+            font-size: 1.1rem;
+            text-align: center;
+            pointer-events: none;
+            background: rgba(255,255,255,0.8);
+            padding: 10px 20px;
+            border-radius: 5px;
+            z-index: 1;
+        }
+        
+        .controls {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .controls.visible {
+            display: block;
+        }
+        
+        .control-group {
+            margin-bottom: 15px;
+        }
+        
+        .control-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #000;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .slider {
+            width: 100%;
+            height: 5px;
+            border-radius: 5px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #e74c3c;
+            cursor: pointer;
+        }
+        
+        .file-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .file-info.visible {
+            display: block;
+        }
+        
+        .file-info h4 {
+            color: #000;
+            margin-bottom: 5px;
+        }
+        
+        .file-info p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .send-btn {
+            background: #25D366;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 30px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .send-btn:hover {
+            background: #128C7E;
+            transform: translateY(-2px);
+        }
+        
+        .send-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .preview-btn {
+            background: #000;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .preview-btn:hover {
+            background: #333;
+            transform: translateY(-2px);
+        }
+        
+        .instructions {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e8f5e8;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #2e7d32;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+            font-size: 1rem;
+            margin-top: 60px;
+        }
+        
+        @media (max-width: 768px) {
+            .design-container {
+                flex-direction: column;
+            }
+            
+            .logo {
+                width: 250px;
+            }
+            
+            .preview-image-container {
+                width: 250px;
+                height: 330px;
+            }
+            
+            .uploaded-design {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .social-links {
+                top: 10px;
+                right: 10px;
+            }
+            
+            .social-link {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="social-links">
+                <a href="https://wa.me/34627157018" target="_blank" class="social-link whatsapp">💬</a>
+                <a href="https://instagram.com/lamerced_wearink" target="_blank" class="social-link instagram">📸</a>
+            </div>
+            <div class="logo-container">
+                <a href="https://postimg.cc/CRzsnVWj" target="_blank">
+                    <img src="https://i.postimg.cc/sgJ68jm0/logo1-jpg.png" alt="logo1-jpg" class="logo" border="0">
+                </a>
+            </div>
+            <p class="tagline">Diseña tu camiseta personalizada - Tu estilo, tu identidad</p>
+        </header>
+        
+        <div class="design-container">
+            <div class="upload-section">
+                <h2>Subir Diseño</h2>
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📁</div>
+                    <p class="upload-text">Arrastra y suelta tu diseño aquí</p>
+                    <p class="upload-text">o</p>
+                    <button class="upload-btn">Seleccionar archivo</button>
+                    <input type="file" id="fileInput" accept="image/*">
+                </div>
+                
+                <div class="file-info" id="fileInfo">
+                    <h4>Archivo seleccionado:</h4>
+                    <p><strong>Nombre:</strong> <span id="fileName">-</span></p>
+                    <p><strong>Tipo:</strong> <span id="fileType">-</span></p>
+                    <p><strong>Tamaño:</strong> <span id="fileSize">-</span></p>
+                </div>
+                
+                <div class="controls" id="controls">
+                    <div class="control-group">
+                        <label>Posición X</label>
+                        <input type="range" min="0" max="300" value="150" class="slider" id="posX">
+                    </div>
+                    <div class="control-group">
+                        <label>Posición Y</label>
+                        <input type="range" min="0" max="400" value="200" class="slider" id="posY">
+                    </div>
+                    <div class="control-group">
+                        <label>Tamaño</label>
+                        <input type="range" min="50" max="300" value="150" class="slider" id="size">
+                    </div>
+                </div>
+                
+                <div class="instructions">
+                    <p>💡 Sube tu diseño, ajústalo como desees y haz clic en "Enviar por WhatsApp" para compartirlo directamente.</p>
+                </div>
+                
+                <button id="sendBtn" class="send-btn" disabled>
+                    <span>📤</span> Enviar por WhatsApp
+                </button>
+                
+                <button id="previewBtn" class="preview-btn">
+                    <span>👕</span> Previsualizar con Camiseta Negra
+                </button>
+            </div>
+            
+            <div class="preview-section">
+                <h2>Previsualización</h2>
+                <div class="preview-image-container">
+                    <img src="https://i.postimg.cc/sDYwQjkD/freepik-assistant-1756432233595.png" alt="Camiseta" class="preview-image" id="previewImage">
+                    <div class="uploaded-design" id="uploadedDesign"></div>
+                    <div class="no-design">Sube tu diseño para verlo aquí</div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Contacto: 627 157 018 | modisterialamerced@gmail.com</p>
+            <p>Calle La Vía 1, Denia, Alicante</p>
+            <p>© 2023 Lamerced Wearink - Estampado de camisetas personalizadas</p>
+        </footer>
+    </div>
+
+    <script>
+        // Elements
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const uploadedDesign = document.getElementById('uploadedDesign');
+        const fileInfo = document.getElementById('fileInfo');
+        const controls = document.getElementById('controls');
+        const posX = document.getElementById('posX');
+        const posY = document.getElementById('posY');
+        const size = document.getElementById('size');
+        const fileName = document.getElementById('fileName');
+        const fileType = document.getElementById('fileType');
+        const fileSize = document.getElementById('fileSize');
+        const noDesign = document.querySelector('.no-design');
+        const sendBtn = document.getElementById('sendBtn');
+        const previewBtn = document.getElementById('previewBtn');
+        const previewImage = document.getElementById('previewImage');
+        
+        let selectedFile = null;
+        let isDragging = false;
+        let offsetX = 0;
+        let offsetY = 0;
+        
+        // Upload area click event
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+        
+        // File selection
+        fileInput.addEventListener('change', handleFileSelection);
+        
+        // Drag and drop events
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('active');
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('active');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('active');
+            
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                handleFileSelection();
+            }
+        });
+        
+        // Handle file selection
+        function handleFileSelection() {
+            const file = fileInput.files[0];
+            if (!file) return;
+            
+            selectedFile = file;
+            
+            // Display file info
+            fileName.textContent = file.name;
+            fileType.textContent = file.type || 'Desconocido';
+            fileSize.textContent = formatFileSize(file.size);
+            fileInfo.classList.add('visible');
+            
+            // Create image preview if it's an image
+            if (file.type.match('image.*')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadedDesign.style.backgroundImage = `url(${e.target.result})`;
+                    uploadedDesign.classList.add('visible');
+                    noDesign.style.display = 'none';
+                    
+                    // Reset to center position
+                    resetDesignPosition();
+                };
+                reader.readAsDataURL(file);
+            } else {
+                // For non-image files, show a generic icon
+                uploadedDesign.style.backgroundImage = 'url("https://placehold.co/150x150/cccccc/666666?text=📁")';
+                uploadedDesign.classList.add('visible');
+                noDesign.style.display = 'none';
+                
+                // Reset to center position
+                resetDesignPosition();
+            }
+            
+            // Show controls
+            controls.classList.add('visible');
+            
+            // Enable send button
+            sendBtn.disabled = false;
+        }
+        
+        // Format file size
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        // Reset design to center position
+        function resetDesignPosition() {
+            const container = document.querySelector('.preview-image-container');
+            const containerWidth = container.offsetWidth;
+            const containerHeight = container.offsetHeight;
+            const designWidth = parseInt(size.value);
+            const designHeight = parseInt(size.value);
+            
+            uploadedDesign.style.left = `${containerWidth / 2}px`;
+            uploadedDesign.style.top = `${containerHeight / 2}px`;
+            uploadedDesign.style.width = `${designWidth}px`;
+            uploadedDesign.style.height = `${designHeight}px`;
+            uploadedDesign.style.transform = 'translate(-50%, -50%)';
+            
+            // Update sliders
+            posX.value = containerWidth / 2;
+            posY.value = containerHeight / 2;
+        }
+        
+        // Design movement
+        uploadedDesign.addEventListener('mousedown', startDrag);
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('mouseup', stopDrag);
+        
+        function startDrag(e) {
+            if (!uploadedDesign.classList.contains('visible')) return;
+            
+            isDragging = true;
+            uploadedDesign.classList.add('dragging');
+            
+            const containerRect = document.querySelector('.preview-image-container').getBoundingClientRect();
+            const designRect = uploadedDesign.getBoundingClientRect();
+            
+            // Calculate offset from the center of the design
+            offsetX = e.clientX - (designRect.left + designRect.width / 2);
+            offsetY = e.clientY - (designRect.top + designRect.height / 2);
+            
+            e.preventDefault();
+        }
+        
+        function drag(e) {
+            if (!isDragging) return;
+            
+            const container = document.querySelector('.preview-image-container');
+            const containerRect = container.getBoundingClientRect();
+            const designWidth = uploadedDesign.offsetWidth;
+            const designHeight = uploadedDesign.offsetHeight;
+            
+            // Calculate new position (center of the design)
+            let newCenterX = e.clientX - offsetX;
+            let newCenterY = e.clientY - offsetY;
+            
+            // Constrain within container
+            const minX = designWidth / 2;
+            const maxX = containerRect.width - designWidth / 2;
+            const minY = designHeight / 2;
+            const maxY = containerRect.height - designHeight / 2;
+            
+            newCenterX = Math.max(minX, Math.min(newCenterX, maxX));
+            newCenterY = Math.max(minY, Math.min(newCenterY, maxY));
+            
+            // Update position (using center as reference)
+            uploadedDesign.style.left = `${newCenterX}px`;
+            uploadedDesign.style.top = `${newCenterY}px`;
+            
+            // Update sliders
+            posX.value = Math.round(newCenterX);
+            posY.value = Math.round(newCenterY);
+        }
+        
+        function stopDrag() {
+            isDragging = false;
+            uploadedDesign.classList.remove('dragging');
+        }
+        
+        // Slider controls
+        posX.addEventListener('input', () => {
+            if (uploadedDesign.classList.contains('visible')) {
+                const container = document.querySelector('.preview-image-container');
+                const containerWidth = container.offsetWidth;
+                const val = parseInt(posX.value);
+                
+                // Constrain value
+                const constrainedVal = Math.max(0, Math.min(val, containerWidth));
+                
+                uploadedDesign.style.left = `${constrainedVal}px`;
+            }
+        });
+        
+        posY.addEventListener('input', () => {
+            if (uploadedDesign.classList.contains('visible')) {
+                const container = document.querySelector('.preview-image-container');
+                const containerHeight = container.offsetHeight;
+                const val = parseInt(posY.value);
+                
+                // Constrain value
+                const constrainedVal = Math.max(0, Math.min(val, containerHeight));
+                
+                uploadedDesign.style.top = `${constrainedVal}px`;
+            }
+        });
+        
+        size.addEventListener('input', () => {
+            if (uploadedDesign.classList.contains('visible')) {
+                const newSize = parseInt(size.value);
+                const container = document.querySelector('.preview-image-container');
+                const containerWidth = container.offsetWidth;
+                const containerHeight = container.offsetHeight;
+                
+                // Constrain size
+                const maxSize = Math.min(containerWidth, containerHeight);
+                const constrainedSize = Math.max(50, Math.min(newSize, maxSize));
+                
+                // Get current center position
+                const currentLeft = parseFloat(uploadedDesign.style.left) || containerWidth / 2;
+                const currentTop = parseFloat(uploadedDesign.style.top) || containerHeight / 2;
+                
+                // Update size
+                uploadedDesign.style.width = `${constrainedSize}px`;
+                uploadedDesign.style.height = `${constrainedSize}px`;
+                
+                // Ensure it stays within bounds after resizing
+                const halfSize = constrainedSize / 2;
+                const boundedLeft = Math.max(halfSize, Math.min(currentLeft, containerWidth - halfSize));
+                const boundedTop = Math.max(halfSize, Math.min(currentTop, containerHeight - halfSize));
+                
+                uploadedDesign.style.left = `${boundedLeft}px`;
+                uploadedDesign.style.top = `${boundedTop}px`;
+                
+                // Update sliders if needed
+                if (boundedLeft !== currentLeft) {
+                    posX.value = boundedLeft;
+                }
+                if (boundedTop !== currentTop) {
+                    posY.value = boundedTop;
+                }
+            }
+        });
+        
+        // Preview button click - change t-shirt color
+        previewBtn.addEventListener('click', () => {
+            // Change the preview image to the black t-shirt
+            previewImage.src = 'https://i.postimg.cc/3wWGbVcx/freepik-assistant-1756555810044.png';
+            
+            // Update the button text temporarily
+            const originalText = previewBtn.innerHTML;
+            previewBtn.innerHTML = '<span>✅</span> Camiseta Negra Seleccionada';
+            
+            // Change back after 2 seconds
+            setTimeout(() => {
+                previewBtn.innerHTML = originalText;
+            }, 2000);
+        });
+        
+        // Send button click
+        sendBtn.addEventListener('click', () => {
+            if (!selectedFile) {
+                alert('Por favor, selecciona un archivo primero');
+                return;
+            }
+            
+            // Create a canvas to merge the t-shirt and design
+            const canvas = document.createElement('canvas');
+            canvas.width = 300;
+            canvas.height = 400;
+            const ctx = canvas.getContext('2d');
+            
+            // Load the t-shirt image (use the current one in preview)
+            const tshirtImg = new Image();
+            tshirtImg.crossOrigin = "anonymous";
+            tshirtImg.onload = function() {
+                // Draw t-shirt
+                ctx.drawImage(tshirtImg, 0, 0, canvas.width, canvas.height);
+                
+                // Draw the uploaded design if it exists
+                if (selectedFile && uploadedDesign.classList.contains('visible')) {
+                    const designImg = new Image();
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        designImg.src = e.target.result;
+                        designImg.onload = function() {
+                            // Get design position and size
+                            const left = parseFloat(uploadedDesign.style.left);
+                            const top = parseFloat(uploadedDesign.style.top);
+                            const width = uploadedDesign.offsetWidth;
+                            const height = uploadedDesign.offsetHeight;
+                            
+                            // Draw design on canvas
+                            ctx.drawImage(designImg, left - width/2, top - height/2, width, height);
+                            
+                            // Convert canvas to blob with high quality
+                            canvas.toBlob(function(blob) {
+                                // Create a download link for the user
+                                const url = URL.createObjectURL(blob);
+                                const a = document.createElement('a');
+                                a.href = url;
+                                a.download = selectedFile.name.replace(/\.[^/.]+$/, "") + "-diseño-final.png";
+                                document.body.appendChild(a);
+                                a.click();
+                                document.body.removeChild(a);
+                                URL.revokeObjectURL(url);
+                                
+                                // Show alert with instructions
+                                setTimeout(() => {
+                                    const message = `Hola! Quiero encargar una camiseta personalizada.\n\nAdjunto mi diseño final con los ajustes realizados.\n\nNombre del archivo: ${selectedFile.name}\nTamaño: ${formatFileSize(selectedFile.size)}`;
+                                    const whatsappUrl = `https://wa.me/34627157018?text=${encodeURIComponent(message)}`;
+                                    window.open(whatsappUrl, '_blank');
+                                    
+                                    alert('Tu diseño se ha procesado y descargado con calidad original.\n\nAhora se abrirá WhatsApp. Por favor, envía el archivo descargado para completar el pedido.');
+                                }, 800);
+                            }, 'image/png', 1.0); // Full quality
+                        };
+                    };
+                    reader.readAsDataURL(selectedFile);
+                }
+            };
+            
+            // Set the source of the t-shirt image to the current preview
+            tshirtImg.src = previewImage.src;
+        });
+    </script>
+</body>
+</html>
+```
